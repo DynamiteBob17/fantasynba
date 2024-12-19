@@ -1,17 +1,17 @@
-package output;
+package io.csv;
 
 import java.util.Arrays;
 
-public class CSVGenerator {
-    private static CSVGenerator csvGenerator = null;
+public class CSVLineGenerator {
+    private static CSVLineGenerator csvLineGenerator = null;
 
-    private CSVGenerator() {
+    private CSVLineGenerator() {
     }
 
-    public static CSVGenerator getInstance() {
-        if (csvGenerator != null) return csvGenerator;
+    public static CSVLineGenerator getInstance() {
+        if (csvLineGenerator != null) return csvLineGenerator;
 
-        return csvGenerator = new CSVGenerator();
+        return csvLineGenerator = new CSVLineGenerator();
     }
 
     public String generateStringValues(String... values) {

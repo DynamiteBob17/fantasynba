@@ -1,18 +1,25 @@
 package data;
-import output.CSVGenerator;
-import output.CSVPrintable;
 
-import java.util.Optional;
+import data.calculation.visitor.PlayerVisitor;
+import io.csv.CSVLineGenerator;
+import io.csv.CSVPrintable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Player implements CSVPrintable {
+
+    public record AdditionalData(double value, String name) {
+    }
+
+    private static final double NO_ADDITIONAL = -1;
+
     private final String name; // full name
     private final String team; // abbr.
     private final double salary; // in millions
     private final double form; // how good they are currently compared to so far
     private final double tp; // total points
-    private final Optional<Double> optional; // some data column that may or may not exist
-
-    private static final double NO_OPT = -1; // no optional
+    private final AdditionalData additional; // some data column that may or may not exist
 
     public Player(
             String name,
@@ -20,14 +27,17 @@ public class Player implements CSVPrintable {
             double salary,
             double form,
             double tp,
-            double optional
+            double additionalValue,
+            String additionalName
     ) {
         this.name = name;
         this.team = team;
         this.salary = salary;
         this.form = form;
         this.tp = tp;
-        this.optional = optional < 0 ? Optional.empty() : Optional.of(optional);
+        this.additional = additionalValue == NO_ADDITIONAL
+                ? null
+                : new AdditionalData(additionalValue, additionalName);
     }
 
     public Player(
@@ -43,7 +53,8 @@ public class Player implements CSVPrintable {
                 salary,
                 form,
                 tp,
-                NO_OPT
+                NO_ADDITIONAL,
+                ""
         );
     }
 
@@ -67,13 +78,37 @@ public class Player implements CSVPrintable {
         return tp;
     }
 
-    public double getOptional() {
-        return optional.orElse(NO_OPT);
+    public double getAdditionalValue() {
+        return existsAdditional() ? additional.value() : NO_ADDITIONAL;
+    }
+
+    public String getAdditionalName() {
+        return existsAdditional() ? additional.name() : "";
+    }
+
+    public boolean existsAdditional() {
+        return additional.value() != NO_ADDITIONAL;
+    }
+
+    public void accept(PlayerVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override
-    public String toCSVString(CSVGenerator csvGenerator) {
-        return null;
+    public String getCSVHeader(CSVLineGenerator csvLineGenerator) {
+        List<String> header = new ArrayList<>(List.of("name", "team", "salary", "form", "tp"));
+        if (existsAdditional()) header.add(additional.name());
+        return csvLineGenerator.generateStringValues(header.toArray(new String[0]));
+    }
+
+    @Override
+    public String getCSVValues(CSVLineGenerator csvLineGenerator) {
+        List<Double> values = new ArrayList<>(List.of(salary, form, tp));
+        if (existsAdditional()) values.add(additional.value());
+
+        return csvLineGenerator.generateStringValues(
+                name, team, csvLineGenerator.generateDoubleValues(values.toArray(new Double[0]))
+        );
     }
 
     @Override
@@ -84,7 +119,7 @@ public class Player implements CSVPrintable {
                 ", salary=" + salary +
                 ", form=" + form +
                 ", tp=" + tp +
-                ", optional=" + getOptional() +
+                (existsAdditional() ? (", %s=%f").formatted(additional.name(), additional.value()) : "") +
                 '}';
     }
 
