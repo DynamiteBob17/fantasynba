@@ -25,7 +25,7 @@ public class CSVLineGenerator {
     }
 
     public String generateDoubleValues(int precision, Double... values) {
-        return generateValues("%." + precision + "f", values);
+        return generateValues("%." + precision + "f", (Object) values);
     }
 
     public String generateDoubleValues(Double... values) {

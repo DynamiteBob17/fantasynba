@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Player implements CSVPrintable {
 
-    public record AdditionalData(double value, String name) {
+    public record AdditionalData(String name, double value) {
     }
 
     private static final double NO_ADDITIONAL = -1;
@@ -21,41 +21,15 @@ public class Player implements CSVPrintable {
     private final double tp; // total points
     private final AdditionalData additional; // some data column that may or may not exist
 
-    public Player(
-            String name,
-            String team,
-            double salary,
-            double form,
-            double tp,
-            double additionalValue,
-            String additionalName
-    ) {
-        this.name = name;
-        this.team = team;
-        this.salary = salary;
-        this.form = form;
-        this.tp = tp;
-        this.additional = additionalValue == NO_ADDITIONAL
+    private Player(Builder builder) {
+        this.name = builder.name;
+        this.team = builder.team;
+        this.salary = builder.salary;
+        this.form = builder.form;
+        this.tp = builder.tp;
+        this.additional = builder.additionalValue == NO_ADDITIONAL
                 ? null
-                : new AdditionalData(additionalValue, additionalName);
-    }
-
-    public Player(
-            String name,
-            String team,
-            double salary,
-            double form,
-            double tp
-    ) {
-        this(
-                name,
-                team,
-                salary,
-                form,
-                tp,
-                NO_ADDITIONAL,
-                ""
-        );
+                : new AdditionalData(builder.additionalName, builder.additionalValue);
     }
 
     public String getName() {
@@ -121,6 +95,51 @@ public class Player implements CSVPrintable {
                 ", tp=" + tp +
                 (existsAdditional() ? (", %s=%f").formatted(additional.name(), additional.value()) : "") +
                 '}';
+    }
+
+    public static class Builder {
+        private String name;
+        private String team;
+        private double salary;
+        private double form;
+        private double tp;
+        private String additionalName = "";
+        private double additionalValue = NO_ADDITIONAL;
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder team(String team) {
+            this.team = team;
+            return this;
+        }
+
+        public Builder salary(double salary) {
+            this.salary = salary;
+            return this;
+        }
+
+        public Builder form(double form) {
+            this.form = form;
+            return this;
+        }
+
+        public Builder tp(double tp) {
+            this.tp = tp;
+            return this;
+        }
+
+        public Builder withAdditional(String additionalName, double additionalValue) {
+            this.additionalName = additionalName;
+            this.additionalValue = additionalValue;
+            return this;
+        }
+
+        public Player build() {
+            return new Player(this);
+        }
     }
 
 }
