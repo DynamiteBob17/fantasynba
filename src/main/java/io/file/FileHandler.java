@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 public class FileHandler {
@@ -25,4 +26,15 @@ public class FileHandler {
         Path path = Paths.get(filePath);
         Files.writeString(path, content);
     }
+
+    public static void appendToFile(String filePath, String content) throws IOException {
+        Path path = Paths.get(filePath);
+
+        if (!Files.exists(path)) {
+            Files.createFile(path);
+        }
+
+        Files.writeString(path, content, StandardOpenOption.APPEND);
+    }
+
 }

@@ -1,4 +1,4 @@
-package data.calculation.strategy;
+package data.calculation.strategy.score;
 
 import data.Player;
 

@@ -3,7 +3,6 @@ package io.parser;
 import data.Player;
 import io.file.FileHandler;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;

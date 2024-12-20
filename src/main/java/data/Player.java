@@ -1,5 +1,6 @@
 package data;
 
+import data.calculation.strategy.score.ScoreCalculationStrategy;
 import data.calculation.visitor.PlayerVisitor;
 import io.csv.CSVLineGenerator;
 import io.csv.CSVPrintable;
@@ -66,6 +67,10 @@ public class Player implements CSVPrintable {
 
     public void accept(PlayerVisitor visitor) {
         visitor.visit(this);
+    }
+
+    public double calculateScore(ScoreCalculationStrategy strategy) {
+        return strategy.calculateScore(this);
     }
 
     @Override

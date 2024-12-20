@@ -1,6 +1,6 @@
 package data;
 
-import data.calculation.strategy.ScoreCalculationStrategy;
+import data.calculation.strategy.score.ScoreCalculationStrategy;
 import data.calculation.visitor.SumVisitor;
 import io.csv.CSVLineGenerator;
 import io.csv.CSVPrintable;

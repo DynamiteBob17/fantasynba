@@ -1,10 +1,15 @@
 package io.csv;
 
 public class CSVGenerator {
+    private static final CSVGenerator INSTANCE = new CSVGenerator();
     private final CSVLineGenerator csvLineGenerator;
 
-    public CSVGenerator() {
+    private CSVGenerator() {
         this.csvLineGenerator = CSVLineGenerator.getInstance();
+    }
+
+    public static CSVGenerator getInstance() {
+        return INSTANCE;
     }
 
     public String generateCompleteCSV(CSVPrintable csvPrintable) {
